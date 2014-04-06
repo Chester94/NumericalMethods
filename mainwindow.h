@@ -48,7 +48,7 @@ public:
     MainWindow(double _a, double _b, double _c, double _d, double _n,
                double _alpha, double _betta, double _epsilon, double _gamma);
 
-    void getParametersWindow();
+    void getParametersWindow(); // a, b, c, d
     void getParametersFunction();
 
     explicit MainWindow(QWidget *parent = 0);
