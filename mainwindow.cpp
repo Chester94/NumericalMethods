@@ -33,6 +33,11 @@ void MainWindow::getParametersFunction()
     epsilon = ui->epsilon->value();
 }
 
+void MainWindow::getParametersNode()
+{
+    n = ui->n->value();
+}
+
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)

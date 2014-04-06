@@ -49,7 +49,8 @@ public:
                double _alpha, double _betta, double _epsilon, double _gamma);
 
     void getParametersWindow(); // a, b, c, d
-    void getParametersFunction();
+    void getParametersFunction(); // alpha, betta ...
+    void getParametersNode();
 
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();

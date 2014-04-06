@@ -231,12 +231,18 @@
          <property name="text">
           <string>f(x)</string>
          </property>
+         <property name="checked">
+          <bool>true</bool>
+         </property>
         </widget>
        </item>
        <item row="0" column="1">
         <widget class="QCheckBox" name="checkBox_4">
          <property name="text">
           <string>δf(x)</string>
+         </property>
+         <property name="checked">
+          <bool>true</bool>
          </property>
         </widget>
        </item>
@@ -245,6 +251,9 @@
          <property name="text">
           <string>P(x)</string>
          </property>
+         <property name="checked">
+          <bool>true</bool>
+         </property>
         </widget>
        </item>
        <item row="1" column="1">
@@ -252,12 +261,18 @@
          <property name="text">
           <string>δP(x)</string>
          </property>
+         <property name="checked">
+          <bool>true</bool>
+         </property>
         </widget>
        </item>
        <item row="2" column="0">
         <widget class="QCheckBox" name="checkBox_3">
          <property name="text">
           <string>r(x)</string>
+         </property>
+         <property name="checked">
+          <bool>true</bool>
          </property>
         </widget>
        </item>
