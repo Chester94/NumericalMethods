@@ -51,9 +51,6 @@ MainWindow::MainWindow(QWidget *parent) :
     // Включить масштабную сетку
     setPlotGrid();
 
-    // Кривая
-    setCurveParameters();
-    addPointsToCurveAndShow();
 
     // Включить возможность приближения/удаления графика
     enableMagnifier();
@@ -61,7 +58,7 @@ MainWindow::MainWindow(QWidget *parent) :
     // Включить возможность перемещения по графику
     enableMovingOnPlot();
 
-    connect(ui->draw, SIGNAL(clicked()), SLOT(draw()));
+
 }
 
 void MainWindow::setPlot(){
@@ -136,15 +133,22 @@ void MainWindow::enableMovingOnPlot()
     d_panner->setMouseButton( Qt::RightButton );
 }
 
-void MainWindow::draw()
+
+
+void MainWindow::on_draw_clicked()
 {
     getParametersWindow();
     ui->qwt_widget->setAxisScale(QwtPlot::xBottom, a, b); // задавать минимум и максимум осей
     ui->qwt_widget->setAxisScale(QwtPlot::yLeft, c, d);
 
+    // Кривая
+//    if(ui->fx->isTristate() == true){
+//        setCurveParameters();
+//        addPointsToCurveAndShow();
+//    }
+
     ui->qwt_widget->replot(); // перерисовать
 }
-
 
 MainWindow::~MainWindow()
 {

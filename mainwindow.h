@@ -82,11 +82,9 @@ private:
     QwtPlotPanner *d_panner;
     void enableMovingOnPlot();
 
-public Q_SLOTS:
-    void draw();
-//    void getParametersWindow();
 
-
+private slots:
+    void on_draw_clicked();
 };
 
 #endif // MAINWINDOW_H
