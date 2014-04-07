@@ -88,7 +88,7 @@ void MainWindow::setCurveParameters()
 {
     curve = new QwtPlotCurve();
     curve->setTitle( "f(x)" );
-    curve->setPen( Qt::blue, 6 ); // цвет и толщина кривой
+    curve->setPen( Qt::blue, 3 ); // цвет и толщина кривой
     curve->setRenderHint
         ( QwtPlotItem::RenderAntialiased, true ); // сглаживание
 
@@ -137,15 +137,17 @@ void MainWindow::enableMovingOnPlot()
 
 void MainWindow::on_draw_clicked()
 {
+
     getParametersWindow();
     ui->qwt_widget->setAxisScale(QwtPlot::xBottom, a, b); // задавать минимум и максимум осей
     ui->qwt_widget->setAxisScale(QwtPlot::yLeft, c, d);
 
     // Кривая
-//    if(ui->fx->isTristate() == true){
-//        setCurveParameters();
-//        addPointsToCurveAndShow();
-//    }
+    if(ui->fx->isChecked()){
+        setCurveParameters();
+        addPointsToCurveAndShow();
+    }
+
 
     ui->qwt_widget->replot(); // перерисовать
 }
