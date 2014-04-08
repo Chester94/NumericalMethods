@@ -59,7 +59,7 @@ private:
     Ui::MainWindow *ui;
 
 
-
+    bool flag;
     void setPlot();
 
     QwtPlotGrid *grid;
@@ -74,6 +74,11 @@ private:
     double pointArray[5][2];
     QPolygonF points;
     void addPointsToCurveAndShow();
+
+    double pointsArrays[5][2];
+    void setCurveParameter();
+    QPolygonF pointss;
+    void addPointsToCurveAndShows();
 
     QwtPlotMagnifier *magnifier;
     void enableMagnifier();

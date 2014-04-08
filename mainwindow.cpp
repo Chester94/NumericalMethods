@@ -14,7 +14,6 @@ MainWindow::MainWindow(double _a, double _b, double _c, double _d, double _n, do
     betta = _betta;
     gamma = _gamma;
     epsilon = _epsilon;
-
 }
 
 void MainWindow::getParametersWindow()
@@ -58,7 +57,7 @@ MainWindow::MainWindow(QWidget *parent) :
     // Включить возможность перемещения по графику
     enableMovingOnPlot();
 
-
+    flag = false;
 }
 
 void MainWindow::setPlot(){
@@ -101,6 +100,7 @@ void MainWindow::setCurveParameters()
 
 void MainWindow::addPointsToCurveAndShow()
 {
+    points.clear();
 
     // Добавить точки на ранее созданную кривую
     // Значения точек записываются в массив, затем считываются
@@ -113,6 +113,31 @@ void MainWindow::addPointsToCurveAndShow()
     }
 
     curve->setSamples( points ); // ассоциировать набор точек с кривой
+
+    curve->attach( ui->qwt_widget ); // отобразить кривую на графике
+}
+
+void MainWindow::setCurveParameter()
+{
+    curve = new QwtPlotCurve();
+    curve->setTitle( "P(x)" );
+    curve->setPen( Qt::red, 3 ); // цвет и толщина кривой
+    curve->setRenderHint
+        ( QwtPlotItem::RenderAntialiased, true ); // сглаживание
+
+}
+
+void MainWindow::addPointsToCurveAndShows()
+{
+    pointss.clear();
+    for (int i = 0; i < 5; i++) {
+        pointArray[i][0] = 2.0 + 0.5*i;
+        pointArray[i][1] = 2.0 + 0.5*i;
+
+        pointss << QPointF( pointArray[i][0], pointArray[i][1]);
+    }
+
+    curve->setSamples( pointss ); // ассоциировать набор точек с кривой
 
     curve->attach( ui->qwt_widget ); // отобразить кривую на графике
 }
@@ -133,11 +158,11 @@ void MainWindow::enableMovingOnPlot()
     d_panner->setMouseButton( Qt::RightButton );
 }
 
-
-
 void MainWindow::on_draw_clicked()
 {
-
+    if (flag)
+        curve->detach();
+    flag = true;
     getParametersWindow();
     ui->qwt_widget->setAxisScale(QwtPlot::xBottom, a, b); // задавать минимум и максимум осей
     ui->qwt_widget->setAxisScale(QwtPlot::yLeft, c, d);
@@ -148,8 +173,8 @@ void MainWindow::on_draw_clicked()
         addPointsToCurveAndShow();
     }
 
-
     ui->qwt_widget->replot(); // перерисовать
+
 }
 
 MainWindow::~MainWindow()
