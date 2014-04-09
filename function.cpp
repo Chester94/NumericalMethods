@@ -1,11 +1,18 @@
 #include "function.h"
 
-Function::Function()
-{
+/*Function::Function():QwtSyntheticPointData
     alpha = betta = delta = epsil = 0;
-}
+}*/
 
-Function::Function(qreal _alpha, qreal _betta, qreal _delta, qreal _epsil)
+/*Function::Function(double _alpha, double _betta, double _delta, double _epsil)
+{
+    alpha = _alpha;
+    betta = _betta;
+    delta = _delta;
+    epsil = _epsil;
+}*/
+
+void Function::setParameters(double _alpha, double _betta, double _delta, double _epsil)
 {
     alpha = _alpha;
     betta = _betta;
@@ -13,17 +20,9 @@ Function::Function(qreal _alpha, qreal _betta, qreal _delta, qreal _epsil)
     epsil = _epsil;
 }
 
-void Function::setParameters(qreal _alpha, qreal _betta, qreal _delta, qreal _epsil)
+double Function::value(double x) const
 {
-    alpha = _alpha;
-    betta = _betta;
-    delta = _delta;
-    epsil = _epsil;
-}
-
-qreal Function::value(qreal x)
-{
-    qreal tmp = epsil * sin( delta * x );
+    double tmp = epsil * sin( delta * x );
 
     if( betta * x == 0 )
         return 1 + tmp;

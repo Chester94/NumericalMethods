@@ -8,26 +8,26 @@
 class Polynomial
 {
 private:
-    qreal fx0;
-    qreal xb;
-    qreal xe;
-    qreal x0;
-    qreal h;
+    double fx0;
+    double xb;
+    double xe;
+    double x0;
+    double h;
 
     int n;
 
-    qreal *delta;
+    double *delta;
 
-    //qreal fx0m(int m);
-    qreal ratio(qreal t, int m, qreal &oldFactor);
+    //double fx0m(int m);
+    double ratio(double t, int m, double &oldFactor);
 
-    qreal* deltaValue(Function &func);
+    double* deltaValue(Function &func);
 
 public:
     Polynomial();
-    Polynomial(qreal _xb, qreal _xe, int _n, Function &func);
+    Polynomial(double _xb, double _xe, int _n, Function &func);
 
-    qreal value(qreal x);
+    double value(double x);
 };
 
 #endif // POLYNOMIAL_H

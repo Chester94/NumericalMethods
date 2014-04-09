@@ -58,6 +58,8 @@ MainWindow::MainWindow(QWidget *parent) :
     enableMovingOnPlot();
 
     flag = false;
+
+    curve = new QwtPlotCurve();
 }
 
 void MainWindow::setPlot(){
@@ -87,14 +89,14 @@ void MainWindow::setCurveParameters()
 {
     curve = new QwtPlotCurve();
     curve->setTitle( "f(x)" );
-    curve->setPen( Qt::blue, 3 ); // цвет и толщина кривой
+    curve->setPen( Qt::blue, 1 ); // цвет и толщина кривой
     curve->setRenderHint
         ( QwtPlotItem::RenderAntialiased, true ); // сглаживание
 
     // Маркеры кривой
-    symbol = new QwtSymbol( QwtSymbol::Ellipse,
+    /*symbol = new QwtSymbol( QwtSymbol::Ellipse,
         QBrush( Qt::yellow ), QPen( Qt::red, 2 ), QSize( 8, 8 ) );
-    curve->setSymbol( symbol );
+    curve->setSymbol( symbol );*/
 }
 
 
@@ -155,23 +157,29 @@ void MainWindow::enableMovingOnPlot()
 
     d_panner = new QwtPlotPanner( ui->qwt_widget->canvas() );
     // клавиша, активирующая перемещение
-    d_panner->setMouseButton( Qt::RightButton );
+    d_panner->setMouseButton( Qt::LeftButton );
 }
 
 void MainWindow::on_draw_clicked()
 {
-    if (flag)
+    /*if (flag)
         curve->detach();
-    flag = true;
+    flag = true;*/
+
     getParametersWindow();
     ui->qwt_widget->setAxisScale(QwtPlot::xBottom, a, b); // задавать минимум и максимум осей
     ui->qwt_widget->setAxisScale(QwtPlot::yLeft, c, d);
 
     // Кривая
-    if(ui->fx->isChecked()){
+    /*if(ui->fx->isChecked()){
         setCurveParameters();
         addPointsToCurveAndShow();
-    }
+    }*/
+
+
+    //setCurveParameters();
+    test();
+
 
     ui->qwt_widget->replot(); // перерисовать
 
@@ -180,4 +188,23 @@ void MainWindow::on_draw_clicked()
 MainWindow::~MainWindow()
 {
     delete ui;
+}
+
+void MainWindow::test()
+{
+    if(curve)
+        delete curve;
+
+    curve = new QwtPlotCurve();
+
+    getParametersFunction();
+
+    curve->setTitle( "f(x)" );
+    curve->setPen( Qt::blue, 1 ); // цвет и толщина кривой
+    curve->setRenderHint
+        ( QwtPlotItem::RenderAntialiased, true ); // сглаживание
+
+    curve->attach(ui->qwt_widget);
+    curve->setData(new Function(alpha, betta, gamma, epsilon));
+    qDebug() << alpha << betta << gamma << epsilon;
 }

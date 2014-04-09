@@ -3,23 +3,36 @@
 
 #include <qmath.h>
 
+#include <qwt_point_data.h>
+
 #include <QDebug>
 
-class Function
+class Function : public QwtSyntheticPointData
 {
 private:
-    qreal alpha;
-    qreal betta;
-    qreal delta; // gamma
-    qreal epsil;
+    double alpha;
+    double betta;
+    double delta; // gamma
+    double epsil;
 
 public:
-    Function();
-    Function(qreal _alpha, qreal _betta, qreal _delta, qreal _epsil);
+    //Function();
+    //Function(double _alpha, double _betta, double _delta, double _epsil);
 
-    void setParameters(qreal _alpha, qreal _betta, qreal _delta, qreal _epsil);
+    Function(const double &_alpha = 1.0, const double &_betta = 0.0,
+             const double &_delta = 1.0, const double &_epsil = 1.0)
+            : QwtSyntheticPointData(100), alpha(_alpha), betta(_betta), delta(_delta), epsil(_epsil)
+    {
+    }
 
-    qreal value(qreal x);
+    void setParameters(double _alpha, double _betta, double _delta, double _epsil);
+
+    double value(double x) const;
+
+    virtual double y(double x) const
+    {
+        return value(x);
+    }
 };
 
 #endif // FUNCTION_H

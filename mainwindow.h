@@ -23,6 +23,8 @@
 #include <QHBoxLayout>
 #include <qwt_counter.h>
 
+#include "function.h"
+
 namespace Ui {
 class MainWindow;
 }
@@ -43,7 +45,6 @@ public:
     double epsilon;
 
     int n;
-
 
     MainWindow(double _a, double _b, double _c, double _d, double _n,
                double _alpha, double _betta, double _epsilon, double _gamma);
@@ -70,7 +71,7 @@ private:
 
     void setCurveParameters();
 
-    // новый массив точек кривой
+    // � Ѕ� ѕ� ІС‹� № � ј� °СЃСЃ� ё� І С‚� ѕС‡� µ� є � єСЂ� ё� І� ѕ� №
     double pointArray[5][2];
     QPolygonF points;
     void addPointsToCurveAndShow();
@@ -86,6 +87,8 @@ private:
 
     QwtPlotPanner *d_panner;
     void enableMovingOnPlot();
+
+    void test();
 
 
 private slots:

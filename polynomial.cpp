@@ -4,7 +4,7 @@ Polynomial::Polynomial()
 {
 }
 
-Polynomial::Polynomial(qreal _xb, qreal _xe, int _n, Function &func)
+Polynomial::Polynomial(double _xb, double _xe, int _n, Function &func)
 {
     xb = _xb;
     xe = _xe;
@@ -21,7 +21,7 @@ Polynomial::Polynomial(qreal _xb, qreal _xe, int _n, Function &func)
         qDebug() << delta[j];*/
 }
 
-/*qreal Polynomial::fx0m(int m)
+/*double Polynomial::fx0m(int m)
 {
     if( m == 1)
         return func.value(x+h/2) - func.value(x-h/2);
@@ -31,12 +31,12 @@ Polynomial::Polynomial(qreal _xb, qreal _xe, int _n, Function &func)
     return delta[m][(n-m)/2];
 }*/
 
-qreal Polynomial::ratio(qreal t, int m, qreal &oldFactor)
+double Polynomial::ratio(double t, int m, double &oldFactor)
 {
     /*int count_numerator_multipliers = 0;
     int count_denominator_multipliers = 0;
 
-    qreal rat = t;
+    double rat = t;
     count_numerator_multipliers++;
 
     if( m % 2 == 0 )
@@ -57,13 +57,13 @@ qreal Polynomial::ratio(qreal t, int m, qreal &oldFactor)
         return oldFactor;
     else
     {
-        qreal tmp = oldFactor;
+        double tmp = oldFactor;
         oldFactor *= (t*t - qPow(m/2, 2));
         return tmp*t;
     }
 }
 
-qreal *Polynomial::deltaValue(Function &func)
+double *Polynomial::deltaValue(Function &func)
 {
     /*for(int i = 0; i < n+1; i++)
         for(int j = 0; j < n+1; j++)
@@ -93,13 +93,13 @@ qreal *Polynomial::deltaValue(Function &func)
         qDebug() << "******";
     }*/
 
-    qreal **deltaTable;
+    double **deltaTable;
     int i, j;
 
-    deltaTable = new qreal* [2*n-1];
+    deltaTable = new double* [2*n-1];
 
     for( i = 0; i < 2*n-1; i++ )
-        deltaTable[i] = new qreal [n];
+        deltaTable[i] = new double [n];
 
     for( i = 0; i < 2*n-1; i++)
         for( j = 0; j < n; j++)
@@ -137,7 +137,7 @@ qreal *Polynomial::deltaValue(Function &func)
     /*for( i = 0; i < 2*n-1; i++ )
         qDebug() << i << deltaTable[i][50];*/
 
-    qreal *tmp = deltaTable[n-1];
+    double *tmp = deltaTable[n-1];
 
     for( i = 0; i < n-1; i++ )
         delete deltaTable[i];
@@ -150,12 +150,12 @@ qreal *Polynomial::deltaValue(Function &func)
     return tmp;
 }
 
-qreal Polynomial::value(qreal x)
+double Polynomial::value(double x)
 {
-    qreal t = (x - x0) / h;
-    qreal oldFactor = t;
+    double t = (x - x0) / h;
+    double oldFactor = t;
 
-    qreal val = fx0;
+    double val = fx0;
 
     for( int i = 1; i < n ; i++ )
     {
