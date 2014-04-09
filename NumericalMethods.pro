@@ -15,11 +15,17 @@ TEMPLATE = app
 SOURCES += main.cpp\
         mainwindow.cpp \
     function.cpp \
-    polynomial.cpp
+    polynomial.cpp \
+    difference.cpp \
+    derivativefx.cpp \
+    derivativepx.cpp
 
 HEADERS  += mainwindow.h \
     function.h \
-    polynomial.h
+    polynomial.h \
+    difference.h \
+    derivativefx.h \
+    derivativepx.h
 
 FORMS    += mainwindow.ui
 CONFIG += qwt

@@ -23,11 +23,21 @@ MainWindow::MainWindow(QWidget *parent) :
                       ui->delta->value(), ui->epsil->value());
 
     px = new Polynomial(fx, ui->A->value(), ui->B->value(), ui->n->value()*2 + 1);
+    rx = new Difference(fx, px);
+
+    dfx = new DerivativeFx(fx, ui->deltaForDerivative->value());
+
+    dpx = new DerivativePx(px, ui->deltaForDerivative->value());
 
     createCurves();
 
     set_curve_fx();
     set_curve_px();
+    set_curve_rx();
+    set_curve_dfx();
+    set_curve_dpx();
+
+    set_point_MaxDif();
 
     ui->drawingArea->replot();
 }
@@ -58,6 +68,9 @@ MainWindow::~MainWindow()
 
     if(curve_dpx)
         delete curve_dpx;
+
+    if(pointMaxDif)
+        delete pointMaxDif;
 
     delete ui;
 }
@@ -105,6 +118,8 @@ void MainWindow::createCurves()
     curve_rx = new QwtPlotCurve();
     curve_dfx = new QwtPlotCurve();
     curve_dpx = new QwtPlotCurve();
+
+    pointMaxDif = new QwtPlotCurve();
 }
 
 void MainWindow::set_curve_fx()
@@ -125,6 +140,70 @@ void MainWindow::set_curve_px()
     curve_px->setVisible(ui->px->isChecked());
 }
 
+void MainWindow::set_curve_rx()
+{
+    setCurveParameters(curve_rx, "r(x)", Qt::cyan, 1);
+    curve_rx->attach(ui->drawingArea);
+    curve_rx->setData(rx);
+
+    curve_rx->setVisible(ui->rx->isChecked());
+}
+
+void MainWindow::set_curve_dfx()
+{
+    setCurveParameters(curve_dfx, "dfx(x)", Qt::green, 1);
+    curve_dfx->attach(ui->drawingArea);
+    curve_dfx->setData(dfx);
+
+    curve_dfx->setVisible(ui->dfx->isChecked());
+}
+
+void MainWindow::set_curve_dpx()
+{
+    setCurveParameters(curve_dpx, "dpx(x)", Qt::magenta, 1);
+    curve_dpx->attach(ui->drawingArea);
+    curve_dpx->setData(dpx);
+
+    curve_dpx->setVisible(ui->dpx->isChecked());
+}
+
+void MainWindow::set_point_MaxDif()
+{
+    setCurveParameters(pointMaxDif, "maxD)", Qt::yellow, 1);
+
+    double begin = ui->A->value();
+    double end = ui->B->value();
+
+    double h = (end - begin) / 1000;
+
+    double x = begin;
+    double maxDif_x = begin;
+
+    while(x < end)
+    {
+        if( rx->y(x) > rx->y(maxDif_x) )
+            maxDif_x = x;
+
+        x += h;
+    }
+
+    double y = fx->value(maxDif_x);
+
+    QwtSymbol *symbol = new QwtSymbol( QwtSymbol::Ellipse,
+            QBrush( Qt::yellow ), QPen( Qt::red, 2 ), QSize( 8, 8 ) );
+    pointMaxDif->setSymbol( symbol );
+
+    QPolygonF points;
+
+    points << QPointF( maxDif_x, y ) ;
+
+    pointMaxDif->setSamples( points ); // ассоциировать набор точек с кривой
+
+    pointMaxDif->attach( ui->drawingArea ); // отобразить кривую на графике
+
+    pointMaxDif->setVisible(ui->maxDif->isChecked());
+}
+
 void MainWindow::setCurveParameters(QwtPlotCurve *curve, QString title, QColor color, int width)
 {
     curve->setTitle(title);
@@ -132,50 +211,6 @@ void MainWindow::setCurveParameters(QwtPlotCurve *curve, QString title, QColor c
     curve->setRenderHint
         ( QwtPlotItem::RenderAntialiased, true ); // сглаживание
 }
-
-/*void MainWindow::on_draw_clicked()
-{
-    if (flag)
-        curve->detach();
-    flag = true;
-
-    getParametersWindow();
-    ui->qwt_widget->setAxisScale(QwtPlot::xBottom, a, b); // задавать минимум и максимум осей
-    ui->qwt_widget->setAxisScale(QwtPlot::yLeft, c, d);
-
-    // Кривая
-    if(ui->fx->isChecked()){
-        setCurveParameters();
-        addPointsToCurveAndShow();
-    }
-
-
-    //setCurveParameters();
-    test();
-
-
-    ui->qwt_widget->replot(); // перерисовать
-
-}*/
-
-/*void MainWindow::test()
-{
-    if(curve)
-        delete curve;
-
-    curve = new QwtPlotCurve();
-
-    getParametersFunction();
-
-    curve->setTitle( "f(x)" );
-    curve->setPen( Qt::blue, 1 ); // цвет и толщина кривой
-    curve->setRenderHint
-        ( QwtPlotItem::RenderAntialiased, true ); // сглаживание
-
-    curve->attach(ui->qwt_widget);
-    curve->setData(new Function(alpha, betta, gamma, epsilon));
-    qDebug() << alpha << betta << gamma << epsilon;
-}*/
 
 void MainWindow::on_applySetting_clicked()
 {
@@ -187,6 +222,10 @@ void MainWindow::on_applySetting_clicked()
     fx->setParameters(ui->alpha->value(), ui->betta->value(),
                       ui->delta->value(), ui->epsil->value());
     px->setParametrs(fx, ui->A->value(), ui->B->value(), ui->n->value()*2 + 1);
+
+    dfx->setDelta(ui->deltaForDerivative->value());
+
+    set_point_MaxDif();
 
     ui->drawingArea->replot();
 }
@@ -200,5 +239,29 @@ void MainWindow::on_fx_clicked(bool checked)
 void MainWindow::on_px_clicked(bool checked)
 {
     curve_px->setVisible(checked);
+    ui->drawingArea->replot();
+}
+
+void MainWindow::on_rx_clicked(bool checked)
+{
+    curve_rx->setVisible(checked);
+    ui->drawingArea->replot();
+}
+
+void MainWindow::on_dfx_clicked(bool checked)
+{
+    curve_dfx->setVisible(checked);
+    ui->drawingArea->replot();
+}
+
+void MainWindow::on_dpx_clicked(bool checked)
+{
+    curve_dpx->setVisible(checked);
+    ui->drawingArea->replot();
+}
+
+void MainWindow::on_maxDif_clicked(bool checked)
+{
+    pointMaxDif->setVisible(checked);
     ui->drawingArea->replot();
 }

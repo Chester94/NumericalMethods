@@ -17,11 +17,15 @@
 #include <qwt_plot_picker.h>
 #include <qwt_picker_machine.h>
 
+#include <qwt_symbol.h>
+
 #include <QToolButton>
 #include <QHBoxLayout>
 #include <qwt_counter.h>
 
-#include "polynomial.h"
+#include "difference.h"
+#include "derivativefx.h"
+#include "derivativepx.h"
 
 namespace Ui {
 class MainWindow;
@@ -45,13 +49,18 @@ private:
 
     Function *fx;
     Polynomial *px;
+    Difference *rx;
+    DerivativeFx *dfx;
+    DerivativePx *dpx;
 
 
     QwtPlotCurve *curve_fx,
                  *curve_px,
                  *curve_rx,
                  *curve_dfx,
-                 *curve_dpx;
+                 *curve_dpx,
+                 *pointMaxDif;
+
 
     void setPlot();
     void setPlotGrid();
@@ -62,6 +71,11 @@ private:
 
     void set_curve_fx();
     void set_curve_px();
+    void set_curve_rx();
+    void set_curve_dfx();
+    void set_curve_dpx();
+
+    void set_point_MaxDif();
 
     void setCurveParameters(QwtPlotCurve *curve, QString title, QColor color, int width);
 
@@ -69,6 +83,10 @@ private slots:
     void on_applySetting_clicked();
     void on_fx_clicked(bool checked);
     void on_px_clicked(bool checked);
+    void on_rx_clicked(bool checked);
+    void on_dfx_clicked(bool checked);
+    void on_dpx_clicked(bool checked);
+    void on_maxDif_clicked(bool checked);
 };
 
 #endif // MAINWINDOW_H
