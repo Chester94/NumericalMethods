@@ -1,48 +1,11 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
-MainWindow::MainWindow(double _a, double _b, double _c, double _d, double _n, double _alpha, double _betta, double _epsilon, double _gamma)
-{
-    a = _a;
-    b = _b;
-    c = _c;
-    d = _d;
-
-    n = _n;
-
-    alpha = _alpha;
-    betta = _betta;
-    gamma = _gamma;
-    epsilon = _epsilon;
-}
-
-void MainWindow::getParametersWindow()
-{
-    a = ui->A->value();
-    b = ui->B->value();
-    c = ui->C->value();
-    d = ui->D->value();
-}
-
-void MainWindow::getParametersFunction()
-{
-    alpha = ui->alpha->value();
-    betta = ui->betta->value();
-    gamma = ui->gamma->value();
-    epsilon = ui->epsilon->value();
-}
-
-void MainWindow::getParametersNode()
-{
-    n = ui->n->value();
-}
-
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-
 
     // Создать поле со шкалами для отображения графика
     setPlot();
@@ -50,131 +13,141 @@ MainWindow::MainWindow(QWidget *parent) :
     // Включить масштабную сетку
     setPlotGrid();
 
-
     // Включить возможность приближения/удаления графика
     enableMagnifier();
 
     // Включить возможность перемещения по графику
     enableMovingOnPlot();
 
-    flag = false;
+    fx = new Function(ui->alpha->value(), ui->betta->value(),
+                      ui->delta->value(), ui->epsil->value());
 
-    curve = new QwtPlotCurve();
+    px = new Polynomial(fx, ui->A->value(), ui->B->value(), ui->n->value()*2 + 1);
+
+    createCurves();
+
+    set_curve_fx();
+    set_curve_px();
+
+    ui->drawingArea->replot();
 }
 
-void MainWindow::setPlot(){
+MainWindow::~MainWindow()
+{
+    if(grid)
+        delete grid;
 
-    //setCentralWidget(ui->qwt_widget); // привязать поле к границам окна
+    if(magnifier)
+        delete magnifier;
 
-    ui->qwt_widget->setTitle( "Сюда вписать функцию" ); // заголовок
-    ui->qwt_widget->setCanvasBackground( Qt::white ); // цвет фона
+    if(d_panner)
+        delete d_panner;
+
+
+    if(curve_fx)
+        delete curve_fx;
+
+    if(curve_px)
+        delete curve_px;
+
+    if(curve_rx)
+        delete curve_rx;
+
+    if(curve_dfx)
+        delete curve_dfx;
+
+    if(curve_dpx)
+        delete curve_dpx;
+
+    delete ui;
+}
+
+void MainWindow::setPlot()
+{
+    ui->drawingArea->setTitle( "Сюда вписать функцию" ); // заголовок
+    ui->drawingArea->setCanvasBackground( Qt::white ); // цвет фона
 
     // Параметры осей координат
-    ui->qwt_widget->setAxisTitle(QwtPlot::yLeft, "Y");
-    ui->qwt_widget->setAxisTitle(QwtPlot::xBottom, "X");
-    ui->qwt_widget->insertLegend( new QwtLegend() );
-    ui->qwt_widget->setAxisScale(QwtPlot::xBottom, -100, 100); // задавать минимум и максимум осей
-    ui->qwt_widget->setAxisScale(QwtPlot::yLeft, -100, 100);
+    ui->drawingArea->setAxisTitle(QwtPlot::xBottom, "X");
+    ui->drawingArea->setAxisTitle(QwtPlot::yLeft, "Y");
+    ui->drawingArea->insertLegend( new QwtLegend() );
+    ui->drawingArea->setAxisScale(QwtPlot::xBottom,
+                                  ui->A->value(), ui->B->value()); // задавать минимум и максимум осей
+    ui->drawingArea->setAxisScale(QwtPlot::yLeft,
+                                  ui->C->value(), ui->D->value());
 }
 
-void MainWindow::setPlotGrid(){
-
+void MainWindow::setPlotGrid()
+{
     grid = new QwtPlotGrid();
     grid->setMajorPen(QPen( Qt::gray, 2 )); // цвет линий и толщина
-    grid->attach(ui->qwt_widget); // добавить сетку к полю графика
-
-}
-
-void MainWindow::setCurveParameters()
-{
-    curve = new QwtPlotCurve();
-    curve->setTitle( "f(x)" );
-    curve->setPen( Qt::blue, 1 ); // цвет и толщина кривой
-    curve->setRenderHint
-        ( QwtPlotItem::RenderAntialiased, true ); // сглаживание
-
-    // Маркеры кривой
-    /*symbol = new QwtSymbol( QwtSymbol::Ellipse,
-        QBrush( Qt::yellow ), QPen( Qt::red, 2 ), QSize( 8, 8 ) );
-    curve->setSymbol( symbol );*/
-}
-
-
-void MainWindow::addPointsToCurveAndShow()
-{
-    points.clear();
-
-    // Добавить точки на ранее созданную кривую
-    // Значения точек записываются в массив, затем считываются
-    // из этого массива
-    for (int i = 0; i < 5; i++) {
-        pointArray[i][0] = 1.0 + 0.5*i;
-        pointArray[i][1] = 1.0 + 0.5*i;
-
-        points << QPointF( pointArray[i][0], pointArray[i][1]);
-    }
-
-    curve->setSamples( points ); // ассоциировать набор точек с кривой
-
-    curve->attach( ui->qwt_widget ); // отобразить кривую на графике
-}
-
-void MainWindow::setCurveParameter()
-{
-    curve = new QwtPlotCurve();
-    curve->setTitle( "P(x)" );
-    curve->setPen( Qt::red, 3 ); // цвет и толщина кривой
-    curve->setRenderHint
-        ( QwtPlotItem::RenderAntialiased, true ); // сглаживание
-
-}
-
-void MainWindow::addPointsToCurveAndShows()
-{
-    pointss.clear();
-    for (int i = 0; i < 5; i++) {
-        pointArray[i][0] = 2.0 + 0.5*i;
-        pointArray[i][1] = 2.0 + 0.5*i;
-
-        pointss << QPointF( pointArray[i][0], pointArray[i][1]);
-    }
-
-    curve->setSamples( pointss ); // ассоциировать набор точек с кривой
-
-    curve->attach( ui->qwt_widget ); // отобразить кривую на графике
+    grid->attach(ui->drawingArea); // добавить сетку к полю графика
 }
 
 void MainWindow::enableMagnifier()
 {
-
-    magnifier = new QwtPlotMagnifier(ui->qwt_widget->canvas());
+    magnifier = new QwtPlotMagnifier( ui->drawingArea->canvas() );
     // клавиша, активирующая приближение/удаление
     magnifier->setMouseButton(Qt::MidButton);
 }
 
 void MainWindow::enableMovingOnPlot()
 {
-
-    d_panner = new QwtPlotPanner( ui->qwt_widget->canvas() );
+    d_panner = new QwtPlotPanner( ui->drawingArea->canvas() );
     // клавиша, активирующая перемещение
     d_panner->setMouseButton( Qt::LeftButton );
 }
 
-void MainWindow::on_draw_clicked()
+void MainWindow::createCurves()
 {
-    /*if (flag)
+    curve_fx = new QwtPlotCurve();
+    curve_px = new QwtPlotCurve();
+    curve_rx = new QwtPlotCurve();
+    curve_dfx = new QwtPlotCurve();
+    curve_dpx = new QwtPlotCurve();
+}
+
+void MainWindow::set_curve_fx()
+{
+    setCurveParameters(curve_fx, "f(x)", Qt::blue, 1);
+    curve_fx->attach(ui->drawingArea);
+    curve_fx->setData(fx);
+
+    curve_fx->setVisible(ui->fx->isChecked());
+}
+
+void MainWindow::set_curve_px()
+{
+    setCurveParameters(curve_px, "P(x)", Qt::red, 1);
+    curve_px->attach(ui->drawingArea);
+    curve_px->setData(px);
+
+    curve_px->setVisible(ui->px->isChecked());
+}
+
+void MainWindow::setCurveParameters(QwtPlotCurve *curve, QString title, QColor color, int width)
+{
+    curve->setTitle(title);
+    curve->setPen(color, width); // цвет и толщина кривой
+    curve->setRenderHint
+        ( QwtPlotItem::RenderAntialiased, true ); // сглаживание
+}
+
+/*void MainWindow::on_draw_clicked()
+{
+    if (flag)
         curve->detach();
-    flag = true;*/
+    flag = true;
 
     getParametersWindow();
     ui->qwt_widget->setAxisScale(QwtPlot::xBottom, a, b); // задавать минимум и максимум осей
     ui->qwt_widget->setAxisScale(QwtPlot::yLeft, c, d);
 
     // Кривая
-    /*if(ui->fx->isChecked()){
+    if(ui->fx->isChecked()){
         setCurveParameters();
         addPointsToCurveAndShow();
-    }*/
+    }
 
 
     //setCurveParameters();
@@ -183,14 +156,9 @@ void MainWindow::on_draw_clicked()
 
     ui->qwt_widget->replot(); // перерисовать
 
-}
+}*/
 
-MainWindow::~MainWindow()
-{
-    delete ui;
-}
-
-void MainWindow::test()
+/*void MainWindow::test()
 {
     if(curve)
         delete curve;
@@ -207,4 +175,30 @@ void MainWindow::test()
     curve->attach(ui->qwt_widget);
     curve->setData(new Function(alpha, betta, gamma, epsilon));
     qDebug() << alpha << betta << gamma << epsilon;
+}*/
+
+void MainWindow::on_applySetting_clicked()
+{
+    ui->drawingArea->setAxisScale(QwtPlot::xBottom,
+                                 ui->A->value(), ui->B->value()); // задавать минимум и максимум осей
+    ui->drawingArea->setAxisScale(QwtPlot::yLeft,
+                                 ui->C->value(), ui->D->value());
+
+    fx->setParameters(ui->alpha->value(), ui->betta->value(),
+                      ui->delta->value(), ui->epsil->value());
+    px->setParametrs(fx, ui->A->value(), ui->B->value(), ui->n->value()*2 + 1);
+
+    ui->drawingArea->replot();
+}
+
+void MainWindow::on_fx_clicked(bool checked)
+{
+    curve_fx->setVisible(checked);
+    ui->drawingArea->replot();
+}
+
+void MainWindow::on_px_clicked(bool checked)
+{
+    curve_px->setVisible(checked);
+    ui->drawingArea->replot();
 }

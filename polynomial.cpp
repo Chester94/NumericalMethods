@@ -1,6 +1,6 @@
 #include "polynomial.h"
 
-Polynomial::Polynomial()
+/*Polynomial::Polynomial()
 {
 }
 
@@ -17,9 +17,9 @@ Polynomial::Polynomial(double _xb, double _xe, int _n, Function &func)
 
     delta = deltaValue(func);
 
-    /*for( int j = 0; j < n; j++)
-        qDebug() << delta[j];*/
-}
+    for( int j = 0; j < n; j++)
+        qDebug() << delta[j];
+}*/
 
 /*double Polynomial::fx0m(int m)
 {
@@ -31,7 +31,7 @@ Polynomial::Polynomial(double _xb, double _xe, int _n, Function &func)
     return delta[m][(n-m)/2];
 }*/
 
-double Polynomial::ratio(double t, int m, double &oldFactor)
+double Polynomial::ratio(double t, int m, double &oldFactor) const
 {
     /*int count_numerator_multipliers = 0;
     int count_denominator_multipliers = 0;
@@ -63,7 +63,7 @@ double Polynomial::ratio(double t, int m, double &oldFactor)
     }
 }
 
-double *Polynomial::deltaValue(Function &func)
+double *Polynomial::deltaValue(Function *func)
 {
     /*for(int i = 0; i < n+1; i++)
         for(int j = 0; j < n+1; j++)
@@ -106,7 +106,7 @@ double *Polynomial::deltaValue(Function &func)
             deltaTable[i][j] = 0;
 
     for( i = -(n-1); i <= n-1; i++ )
-        deltaTable[i + (n-1)][0] = func.value(x0 + i*h/2);
+        deltaTable[i + (n-1)][0] = func->value(x0 + i*h/2);
 
     /*qDebug() << deltaTable[n-1][0] << deltaTable[n-1-2][0] << deltaTable[n-1+2][0];
     qDebug() << func.value(x0) << func.value(x0-h) << func.value(x0+h);*/
@@ -150,7 +150,24 @@ double *Polynomial::deltaValue(Function &func)
     return tmp;
 }
 
-double Polynomial::value(double x)
+void Polynomial::calculateValues(Function *func)
+{
+    x0 = (startPoint + endPoint) / 2;
+
+    fx0 = func->value(x0);
+
+    if(n != 1)
+        h = (endPoint - startPoint) / (n-1);
+    else
+        h = 0;
+
+    if(delta)
+        delete delta;
+
+    delta = deltaValue(func);
+}
+
+double Polynomial::value(double x) const
 {
     double t = (x - x0) / h;
     double oldFactor = t;
@@ -164,4 +181,15 @@ double Polynomial::value(double x)
     }
 
     return val;
+}
+
+void Polynomial::setParametrs(Function *func,
+                              const double _startPoint = 0.0, const double _endPoint = 1.0,
+                              const double _n = 11.0)
+{
+    startPoint = _startPoint;
+    endPoint = _endPoint;
+    n = _n;
+
+    calculateValues(func);
 }
