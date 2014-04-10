@@ -16,8 +16,6 @@ private:
     double epsil;
 
 public:
-    //Function();
-    //Function(double _alpha, double _betta, double _delta, double _epsil);
 
     Function(const double &_alpha = 1.0, const double &_betta = 0.0,
              const double &_delta = 1.0, const double &_epsil = 1.0)

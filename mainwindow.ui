@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>907</width>
-    <height>474</height>
+    <height>497</height>
    </rect>
   </property>
   <property name="minimumSize">
@@ -478,6 +478,9 @@
      <widget class="QCheckBox" name="centerCheck">
       <property name="text">
        <string>Центрировать при перерисовке</string>
+      </property>
+      <property name="checked">
+       <bool>true</bool>
       </property>
      </widget>
     </item>

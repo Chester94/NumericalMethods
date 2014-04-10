@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QMessageBox>
 
 #include <qwt_plot.h>
 #include <qwt_plot_grid.h>
@@ -52,7 +53,6 @@ private:
     Difference *rx;
     DerivativeFx *dfx;
     DerivativePx *dpx;
-
 
     QwtPlotCurve *curve_fx,
                  *curve_px,

@@ -18,7 +18,6 @@ private:
 
     double *delta;
 
-    //double fx0m(int m);
     double ratio(double t, int m, double &oldFactor) const;
 
     double* deltaValue(Function *func);
@@ -26,9 +25,6 @@ private:
     void calculateValues(Function *func);
 
 public:
-    /*Polynomial();
-    Polynomial(double _xb, double _xe, int _n, Function &func);*/
-
     Polynomial(Function *func,
                const double _startPoint = 0.0, const double _endPoint = 1.0,
                const double _n = 11.0)

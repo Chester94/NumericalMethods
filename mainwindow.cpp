@@ -215,6 +215,15 @@ void MainWindow::setCurveParameters(QwtPlotCurve *curve, QString title, QColor c
 
 void MainWindow::on_applySetting_clicked()
 {
+    if( ui->A->value() >= ui->B->value() || ui->C->value() >= ui->D->value() )
+    {
+        QMessageBox *errorMessage = new QMessageBox(QMessageBox::Critical,
+                                                    "Error", "Check window parametrs");
+        errorMessage->exec();
+        delete errorMessage;
+        return;
+    }
+
     if(ui->centerCheck->isChecked())
     {
         ui->drawingArea->setAxisScale(QwtPlot::xBottom,
