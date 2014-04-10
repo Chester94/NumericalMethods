@@ -28,7 +28,7 @@ double Function::value(double x) const
         return 1 + tmp;
 
     if( alpha*alpha - x*x*x == 0 )
-        return 0 + tmp;
+        return 0.5 + tmp;
 
     return cos( betta * x / ( alpha*alpha - x*x*x ) ) + tmp;
 }

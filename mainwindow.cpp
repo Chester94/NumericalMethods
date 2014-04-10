@@ -77,15 +77,16 @@ MainWindow::~MainWindow()
 
 void MainWindow::setPlot()
 {
-    ui->drawingArea->setTitle( "Сюда вписать функцию" ); // заголовок
+    ui->drawingArea->setTitle( "cos( ßx / (ɑ^2 - x^3) ) + ɛsin( δx )" ); // заголовок
     ui->drawingArea->setCanvasBackground( Qt::white ); // цвет фона
 
     // Параметры осей координат
     ui->drawingArea->setAxisTitle(QwtPlot::xBottom, "X");
     ui->drawingArea->setAxisTitle(QwtPlot::yLeft, "Y");
-    ui->drawingArea->insertLegend( new QwtLegend() );
+    ui->drawingArea->insertLegend( new QwtLegend(), QwtPlot::BottomLegend );
     ui->drawingArea->setAxisScale(QwtPlot::xBottom,
-                                  ui->A->value(), ui->B->value()); // задавать минимум и максимум осей
+                                  ui->A->value(), ui->B->value());
+    // задавать минимум и максимум осей
     ui->drawingArea->setAxisScale(QwtPlot::yLeft,
                                   ui->C->value(), ui->D->value());
 }
@@ -151,7 +152,7 @@ void MainWindow::set_curve_rx()
 
 void MainWindow::set_curve_dfx()
 {
-    setCurveParameters(curve_dfx, "dfx(x)", Qt::green, 1);
+    setCurveParameters(curve_dfx, "df(x)", Qt::green, 1);
     curve_dfx->attach(ui->drawingArea);
     curve_dfx->setData(dfx);
 
@@ -160,7 +161,7 @@ void MainWindow::set_curve_dfx()
 
 void MainWindow::set_curve_dpx()
 {
-    setCurveParameters(curve_dpx, "dpx(x)", Qt::magenta, 1);
+    setCurveParameters(curve_dpx, "dp(x)", Qt::magenta, 1);
     curve_dpx->attach(ui->drawingArea);
     curve_dpx->setData(dpx);
 
@@ -169,7 +170,7 @@ void MainWindow::set_curve_dpx()
 
 void MainWindow::set_point_MaxDif()
 {
-    setCurveParameters(pointMaxDif, "maxD)", Qt::yellow, 1);
+    setCurveParameters(pointMaxDif, "maxDif", Qt::yellow, 1);
 
     double begin = ui->A->value();
     double end = ui->B->value();
@@ -208,16 +209,20 @@ void MainWindow::setCurveParameters(QwtPlotCurve *curve, QString title, QColor c
 {
     curve->setTitle(title);
     curve->setPen(color, width); // цвет и толщина кривой
-    curve->setRenderHint
-        ( QwtPlotItem::RenderAntialiased, true ); // сглаживание
+    curve->setRenderHint( QwtPlotItem::RenderAntialiased, true );
+    // сглаживание
 }
 
 void MainWindow::on_applySetting_clicked()
 {
-    ui->drawingArea->setAxisScale(QwtPlot::xBottom,
-                                 ui->A->value(), ui->B->value()); // задавать минимум и максимум осей
-    ui->drawingArea->setAxisScale(QwtPlot::yLeft,
-                                 ui->C->value(), ui->D->value());
+    if(ui->centerCheck->isChecked())
+    {
+        ui->drawingArea->setAxisScale(QwtPlot::xBottom,
+                                      ui->A->value(), ui->B->value());
+        // задавать минимум и максимум осей
+        ui->drawingArea->setAxisScale(QwtPlot::yLeft,
+                                      ui->C->value(), ui->D->value());
+    }
 
     fx->setParameters(ui->alpha->value(), ui->betta->value(),
                       ui->delta->value(), ui->epsil->value());
