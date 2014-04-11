@@ -175,7 +175,7 @@ void MainWindow::set_point_MaxDif()
     double begin = ui->A->value();
     double end = ui->B->value();
 
-    double h = (end - begin) / 1000;
+    double h = (end - begin) / ( 2*ui->drawingArea->width() );
 
     double x = begin;
     double maxDif_x = begin;
@@ -203,6 +203,8 @@ void MainWindow::set_point_MaxDif()
     pointMaxDif->attach( ui->drawingArea ); // отобразить кривую на графике
 
     pointMaxDif->setVisible(ui->maxDif->isChecked());
+
+    qDebug() << rx->y(maxDif_x);
 }
 
 void MainWindow::setCurveParameters(QwtPlotCurve *curve, QString title, QColor color, int width)
